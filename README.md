@@ -121,4 +121,6 @@ The difference is just this, as expected, [see the diff file](http://www.mergely
 
 ## Conclusion
 
-There is none, I don't know what's causing the glitch. If anyone could enlighten me, drop a line to dev apr.apache.org, cc michal.babacek gmail. THX.
+There is none, I don't know what's causing the glitch. When I use ```-DCMAKE_C_FLAGS_RELEASE="/MD /O2 /Ob2 /Wall /Zi"``` the test passes. If I remove [/MD](https://docs.microsoft.com/en-us/cpp/build/reference/md-mt-ld-use-run-time-library), i.e. ```-DCMAKE_C_FLAGS_RELEASE="/O2 /Ob2 /Wall /Zi"```, the test fails in the aforementioned fashion.
+
+If anyone could enlighten me, drop a line to dev apr.apache.org, cc michal.babacek gmail. THX.
