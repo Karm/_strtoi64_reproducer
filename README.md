@@ -131,7 +131,7 @@ ModLoad: 00007ffd'f9600000 00007ffd'f97db000   ntdll.dll
 ModLoad: 00007ffd'f7430000 00007ffd'f74de000   C:\WINDOWS\System32\KERNEL32.DLL
 ModLoad: 00007ffd'f6570000 00007ffd'f67b9000   C:\WINDOWS\System32\KERNELBASE.dll
 ```
-, if I add ```/MD``` to the ```cl``` flags, [according to the manual on CRT LIbrary features](https://msdn.microsoft.com/en-us/library/abx4dbyh.aspx?f=255&MSPPError=-2147217396), both and are loaded:
+, if I add ```/MD``` to the ```cl``` flags, [according to the manual on CRT LIbrary features](https://msdn.microsoft.com/en-us/library/abx4dbyh.aspx?f=255&MSPPError=-2147217396), both ```ucrtbase.dll``` and ```VCRUNTIME140.dll```are loaded:
 ```
 ModLoad: 00007ff7'd4fe0000 00007ff7'd4fe6000   image00007ff7'd4fe0000
 ModLoad: 00007ffd'f9600000 00007ffd'f97db000   ntdll.dll
