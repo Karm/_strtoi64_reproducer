@@ -1,6 +1,6 @@
 # Investigates a CMake/cl/link strtoi64 quirk with APR tests
 
-I encountered a weird test failure with ```_strtoi64``` with Microsoft Windows Server 2012 and Windows 10 Enterprise v1703, Visual Studio 2017, x86_64. To be more specific, it happens both with ```C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/bin/amd64/cl.exe``` and ```C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.11.25503/bin/Hostx64/x64/cl.exe``` What follows is a minimized example that passes the test, unfortunately not reproducing the issue. Next, there is the issue depicted on an APR test suite.
+I encountered a weird test failure with ```_strtoi64``` with Microsoft Windows Server 2012 and Windows 10 Enterprise v1709, Visual Studio 2017, x86_64. To be more specific, it happens both with ```C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/bin/amd64/cl.exe``` and ```C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.11.25503/bin/Hostx64/x64/cl.exe``` What follows is a minimized example that passes the test, unfortunately not reproducing the issue. Next, there is the issue depicted on an APR test suite.
 
 * CL used: ```C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.11.25503/bin/Hostx64/x64/cl.exe```
 * ucrt headers from: ```C:\Program Files (x86)\windows kits\10\include\10.0.16299.0\ucrt\```
