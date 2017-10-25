@@ -2,6 +2,9 @@
 
 I encountered a weird test failure with ```_strtoi64``` with Microsoft Windows Server 2012 and Windows 10, Visual Studio 2017, x86_64. To be more specific, it happens both with ```C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/bin/amd64/cl.exe``` and ```C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.11.25503/bin/Hostx64/x64/cl.exe``` What follows is a minimized example that passes the test, unfortunately not reproducing the issue. Next, there is the issue depicted on an APR test suite.
 
+* CL used: ```C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.11.25503/bin/Hostx64/x64/cl.exe```
+* ucrt headers from: ```C:\Program Files (x86)\windows kits\10\include\10.0.16299.0\ucrt\```
+
 ## Compile and link a small excerpt manually
 ```
 C:\Users\karm\source\repos\_strtoi64_reproducer
@@ -111,16 +114,17 @@ teststr                    14      1      7.14%
 ```
 
 ## Difference between CMakeCache.txt
-
+### /MD
 The difference is just this, as expected, [see the diff file](http://www.mergely.com/38UMnLC3/).
 
 ```
 - CMAKE_C_FLAGS_RELEASE:STRING=/MD /O2 /Ob2 /DNDEBUG
 + CMAKE_C_FLAGS_RELEASE:STRING=/O2 /Wall /Zi
 ```
+### WinDbg
+When executed within WinDbg, it is apparent that the difference ```/MD``` brings is the addition (or the lack thereof) of ```C:\WINDOWS\SYSTEM32\VCRUNTIME140.dll```, [see the diff](http://www.mergely.com/b5GTkE39/).
 
 ## Conclusion
-
-There is none, I don't know what's causing the glitch. When I use ```-DCMAKE_C_FLAGS_RELEASE="/MD /O2 /Ob2 /Wall /Zi"``` the test passes. If I remove [/MD](https://docs.microsoft.com/en-us/cpp/build/reference/md-mt-ld-use-run-time-library), i.e. ```-DCMAKE_C_FLAGS_RELEASE="/O2 /Ob2 /Wall /Zi"```, the test fails in the aforementioned fashion.
+There is none, I don't know what's causing the glitch but for the fact that there is probably a buggy ```_strtoi64``` loaded if the one that is probably correct in ```VCRUNTIME140.dll``` is not used. When I use ```-DCMAKE_C_FLAGS_RELEASE="/MD /O2 /Ob2 /Wall /Zi"``` the test passes. If I remove [/MD](https://docs.microsoft.com/en-us/cpp/build/reference/md-mt-ld-use-run-time-library), i.e. ```-DCMAKE_C_FLAGS_RELEASE="/O2 /Ob2 /Wall /Zi"```, the test fails in the aforementioned fashion.
 
 If anyone could enlighten me, drop a line to dev apr.apache.org, cc michal.babacek gmail. THX.
