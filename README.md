@@ -121,8 +121,26 @@ The difference is just this, as expected, [see the diff file](http://www.mergely
 - CMAKE_C_FLAGS_RELEASE:STRING=/MD /O2 /Ob2 /DNDEBUG
 + CMAKE_C_FLAGS_RELEASE:STRING=/O2 /Wall /Zi
 ```
-### WinDbg
+### WinDbg - APR Test
 When executed within WinDbg, it is apparent that the difference ```/MD``` brings is the addition (or the lack thereof) of ```C:\WINDOWS\SYSTEM32\VCRUNTIME140.dll```, [see the diff](http://www.mergely.com/b5GTkE39/).
+### WinDbg - main.exe "reproducer"
+As I look at the reproducer from the beginning of this article, that actually doesn't reproduce the problem, I can see there is neither ```ucrtbase.dll``` nor ```VCRUNTIME140.dll``` loaded, it is just:
+```
+ModLoad: 00007ff7'b1350000 00007ff7'b1370000   image00007ff7'b1350000
+ModLoad: 00007ffd'f9600000 00007ffd'f97db000   ntdll.dll
+ModLoad: 00007ffd'f7430000 00007ffd'f74de000   C:\WINDOWS\System32\KERNEL32.DLL
+ModLoad: 00007ffd'f6570000 00007ffd'f67b9000   C:\WINDOWS\System32\KERNELBASE.dll
+```
+, if I add ```/MD``` to the ```cl``` flags, [according to the manual on CRT LIbrary features](https://msdn.microsoft.com/en-us/library/abx4dbyh.aspx?f=255&MSPPError=-2147217396), both and are loaded:
+```
+ModLoad: 00007ff7'd4fe0000 00007ff7'd4fe6000   image00007ff7'd4fe0000
+ModLoad: 00007ffd'f9600000 00007ffd'f97db000   ntdll.dll
+ModLoad: 00007ffd'f7430000 00007ffd'f74de000   C:\WINDOWS\System32\KERNEL32.DLL
+ModLoad: 00007ffd'f6570000 00007ffd'f67b9000   C:\WINDOWS\System32\KERNELBASE.dll
+ModLoad: 00007ffd'f6470000 00007ffd'f6566000   C:\WINDOWS\System32\ucrtbase.dll
+ModLoad: 00007ffd'e8830000 00007ffd'e8846000   C:\WINDOWS\SYSTEM32\VCRUNTIME140.dll
+```
+, so I am unable to reproduce the situation with APR lib test, when only ```ucrtbase.dll``` is loaded without any ```VCRUNTIME140.dll```.
 
 ## Conclusion
 There is none, I don't know what's causing the glitch but for the fact that there is probably a buggy ```_strtoi64``` loaded if the one that is probably correct in ```VCRUNTIME140.dll``` is not used. When I use ```-DCMAKE_C_FLAGS_RELEASE="/MD /O2 /Ob2 /Wall /Zi"``` the test passes. If I remove [/MD](https://docs.microsoft.com/en-us/cpp/build/reference/md-mt-ld-use-run-time-library), i.e. ```-DCMAKE_C_FLAGS_RELEASE="/O2 /Ob2 /Wall /Zi"```, the test fails in the aforementioned fashion.
